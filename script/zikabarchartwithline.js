@@ -1,21 +1,15 @@
 
-//Create svg object
-var svg = d3.select("#zika1")
+//Create svg2 object
+var svg2 = d3.select("#zika2")
         .append("svg:svg")
         .attr("width", 900)
         .attr("height", 500);
 
-var margin = {top: 20, right: 20, bottom: 30, left: 40},
-    width = +svg.attr("width") - margin.left - margin.right,
-    height = +svg.attr("height") - margin.top - margin.bottom;
+var x2 = d3.scaleLinear().rangeRound([0, width]),
+    y2 = d3.scaleLinear().rangeRound([height, 0]);
 
-var x = d3.scaleLinear().rangeRound([0, width]),
-    y = d3.scaleLinear().rangeRound([height, 0]);
-
-var g = svg.append("g")
+var g2 = svg2.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var url = "https://raw.githubusercontent.com/RodrigoZepeda/Modelos_epidemiologicos/master/data/Zika.csv";
 
 d3.csv(url, function(d) {
     
@@ -26,19 +20,19 @@ d3.csv(url, function(d) {
 }, function(error, data) {
   if (error) throw error;
 
-  x.domain([0, 1 + d3.max(data, function(d) { return d.semana; })]);
-  y.domain([0, d3.max(data, function(d) { return d.Zika; })]);
+  x2.domain([0, 1 + d3.max(data, function(d) { return d.semana; })]);
+  y2.domain([0, d3.max(data, function(d) { return d.Zika; })]);
 
-  g.append("g")
+  g2.append("g")
       .attr("class", "axis axis--x")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(x2));
 
-  g.append("g")
+  g2.append("g")
       .attr("class", "axis axis--y")
-      .call(d3.axisLeft(y))
+      .call(d3.axisLeft(y2))
    
-  g.selectAll(".bar")
+  g2.selectAll(".bar")
       .data(data)
       .enter().append("rect")
       .attr("class", "bar")
@@ -46,4 +40,12 @@ d3.csv(url, function(d) {
       .attr("y", function(d) { return y(d.Zika); })
       .attr("width", function(d) { return 20; })
       .attr("height", function(d) { return height - y(d.Zika); });
+
+   g2.append("line")
+     .attr("x1", 0)
+     .attr("y1", height)
+     .attr("x2", width)
+     .attr("y2", 50)
+     .style("stroke-width", 3)
+     .style("stroke", "red"); 
 });
