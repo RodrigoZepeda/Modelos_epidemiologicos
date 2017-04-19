@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Introducción a posibles técnicas para modelar Zika">
+    <meta name="keywords" content="Epidemiología, Probabilidad, Modelos matemáticos, Zika, Bayes, Estadística, Bayesiana">
+    <meta name="author" content="Rodrigo Zepeda Tello">
+
+    <title>Modelando Zika</title>
+
+    <!-- Bootstrap code from https://bootswatch.com/flatly/ -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media = "all">
+    <link href="css/custom.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true,
+            },
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+
+</head>
+
+<body style = "" class = "">
+    <!--Navigation menu-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                <a class="navbar-brand" href="#">Modelando Zika</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="https://github.com/RodrigoZepeda/Modelos_epidemiologicos"><img src="images/GitHub-Mark-Light-32px.png"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="container">
+         <div class = "bs-docs-section clearfix">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header" id = "banner">
+                        <h1>Modelando Zika</h1>
+                        <h4> Estadística Bayesiana, Series de Tiempo, Modelos de Markov, 
+                            Ecuaciones Diferenciales Ordinarias, Modelos espaciales y otras cosas que 
+                            te dejan con cara de WHAAAAAT? </h4>
+                        <p class="lead subtitle">Rodrigo Zepeda Tello</p>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+
+    <!-- Main text --> 
+    <div class="container">
+        <div class = "bs-docs-section">
+            <div class = "row">
+                <div class="col-lg-12">
+
+                    <div class = "well">
+                       <h4>Advertencias</h4>
+                       <p>
+                           1. El caso del Zika en México es para tener una excusa para presentar un titipuchal de técnicas
+                           matemáticas que son menos "famosas" que las de un curso "usual" de bioestadística. Algunos de los
+                           datos aquí presentados son inventados (digo cuándo lo son) y otros son reales (también intento
+                           indicar cuándo). 
+                       </p>
+                       <p>
+                           2. Soy matemático y mi "área" (supuestamente) es probabilidad. No soy estadístico, ingeniero,
+                           médico o psíquico. Éste es sólo un texto introductorio, desde el punto de vista de un 
+                           matemático que de ninguna manera pretende hablar de técnicas nuevas (<i>i.e.</i> de un
+                           año después de los 80) ni de ningún resultado de medicina (donde yo no sé más que lo que
+                           dice Wikipedia). 
+                       </p>
+                       <p>
+                           3. Toda ésta página está bajo una 
+                           <a href = "https://github.com/RodrigoZepeda/Modelos_epidemiologicos/blob/master/GPL3.txt"> licencia GPL-3 </a> 
+                           lo que significa que puedes distribuir, comerciar y modificar lo que viene aquí 
+                           prácticamente para lo que quieras siempre y cuando mantengas la misma licencia y otorgues
+                           el crédito correspondiente. 
+                       </p>
+                   </div>
+
+                    <h2>El fin del mundo en 2016</h2>
+                
+                    <p>Viajemos en el tiempo a inicios del año pasado. En ese momento 
+                        <a href = "http://www.excelsior.com.mx/nacional/2016/01/22/1070341">comenzaban los reportes </a>de 
+                        presencia de <a href = "http://www.who.int/mediacentre/factsheets/zika/es/">Zika</a> en México. Aún
+                        no era la temporada de lluvias (cuando hay más moscos) por lo que la cantidad de casos 
+                        se esperaba aumentaran. El Zika era una enfermedad nueva en el país (y "nueva" en el continente)
+                        por lo que no se tenía un registro histórico de la misma. Las preguntas relevantes
+                        para ese momento eran: <b> ¿cuántos casos esperar?, ¿dónde?, 
+                        ¿qué medidas tomar para reducirlos dada la cantidad limitada de recursos?</b>
+                    </p>
+
+                    <p>
+                    </p>
+
+                   
+
+                    <div id = "fig1" class = "panel panel-default">
+                        <div class="panel-heading" id = "fig1title"></div>
+                        <div class="panel-body">
+                            <div class = "row">
+                                <div class="form-group col-lg-9" id = "zika1" style = "text-align:center;">
+                                </div>
+                                <script src="script/zikabarchart.js"></script>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,37 @@
+#banner {
+    border-bottom: none;
+    margin-top: 150px;
+}
+
+h1 {
+    font-size: 500%;
+}
+
+h3 {
+    margin-top: 40px;
+}
+
+.line {
+  fill: none;
+  stroke:steelblue;
+}
+
+.subtitle {
+    color: gray;
+}
+
+svg {
+    margin: auto;
+}
+
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+.axis--x path {
+  display: none;
+}
