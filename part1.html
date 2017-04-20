@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Introducción a posibles técnicas para modelar Zika">
+    <meta name="keywords" content="Epidemiología, Probabilidad, Modelos matemáticos, Zika, Bayes, Estadística, Bayesiana">
+    <meta name="author" content="Rodrigo Zepeda Tello">
+
+    <title>Modelando Zika 2</title>
+
+    <!-- Bootstrap code from https://bootswatch.com/flatly/ -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media = "all">
+    <link href="css/custom.css" rel="stylesheet" media = "all"> 
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true,
+            },
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+
+</head>
+
+<body style = "" class = "">
+    <!--Navigation menu-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                <a class="navbar-brand" href="#">Modelando Zika</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="https://github.com/RodrigoZepeda/Modelos_epidemiologicos"><img src="images/GitHub-Mark-Light-32px.png"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="container">
+         <div class = "bs-docs-section clearfix">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header" id = "banner">
+                        <h1>Modelando Zika</h1>
+                        <h4> <b>Estadística Bayesiana</b>, Series de Tiempo, Modelos de Markov, 
+                            Ecuaciones Diferenciales Ordinarias, Modelos espaciales y otras cosas que 
+                            te dejan con cara de WHAAAAAT? </h4>
+                        <p class="lead subtitle">Rodrigo Zepeda Tello</p>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+
+    <!-- Main text --> 
+    <div class="container">
+        <div class = "bs-docs-section">
+            <div class = "row">
+                <div class="col-lg-12">
+
+                    <h2>Ahora sí: Bayesiana</h2>
+                
+                    <p>En la <a href="index.html"> sección anterior </a> discutimos algunos de los problemas
+                    de la estadística frecuentista. En el caso de analizar nuestros poderes psíquicos,
+                    llegamos a la conclusión de que el contexto es relevante para hacer pruebas de hipótesis.
+                    Luego en el segundo experimento nos dimos cuenta que si bien los resultados frecuentistas
+                    pueden decirnos que algo funciona no nos dicen qué tanto. En particular, con el medicamento,
+                    notamos que si tenemos a toda la población el medicamento funciona aumentando 0.01°C la temperatura:
+                    para todos fines prácticos es inútil; sin embargo la estadística frecuentista no integra estos
+                    criterios de utilidad. Por último, nos dimos cuenta que quién sabe qué pasa usualmente con los
+                    intervalos de confianza pero nunca dan lo que deberían. 
+                    </p>
+
+                    <p> El punto relevante que discutimos anteriormente es que la probabilidad es sólo un reflejo
+                        de las creencias personales. Y esto de inmediato sucita una especie de nihilismo: 
+                        ¡si cada quién puede creer lo que quiere ¿qué chiste tiene hacer algo?! El problema no es tan
+                        simple: la probabilidad (numérica) tiene ciertas reglas y debes seguirlas independientemente 
+                        de tus creencias. Por ejemplo: no es posible creer en una probabilidad del 400% ni en una de 
+                        -921%. Las probabilidades están entre 0 y 100% sin importar lo que creas.  Otra regla que 
+                        se debe obedecer es la siguiente: un evento que contiene a otro debe tener una probabilidad mayor.
+                        Por ejemplo:
+                        \begin{equation}\nonumber
+                            Prob(\textrm{Llueva fuerta}) \leq Prob(\textrm{Llueva})
+                        \end{equation} 
+                        La idea de la desigualdad es porque "llover fuerte" es sólo una de las formas en 
+                        las que puede llover por lo que "llover" contiene a "llover fuerte". Hay más reglas de la 
+                        probabilidad y éstas se conocen como axiomas; para más 
+                        <a href = "https://global.oup.com/academic/product/the-oxford-handbook-of-probability-and-philosophy-9780199607617?cc=mx&lang=en&">información vease aquí </a>. 
+                    </p>
+
+                     <div class = "alert alert-dismissible alert-warning"> 
+                         <p>
+                             Como nota para los psicólogos: las probabilidades no son un modelo de cómo la gente
+                         establece sus creencias (para eso están ustedes). Las probabilidades pretenden ser 
+                         sólo una forma de cuantificar esas creencias (por supuesto que hay 1000 formas más).
+                         </p>
+                    </div>   
+
+                    <h3> Cómo no morir </h3>
+
+                    <p> En este primer ejemplo vamos a considerar un problema de decisión. Seguro te estarás preguntando
+                        ¿esto qué rayos tiene que ver? La estadística es "decidir" dada una muestra cuál es 
+                        la mejor cantidad para expresar su media (por ejemplo) o "decidir" dadas múltiples 
+                        opciones cuál es el mejor modelo. Antes de saltar a decisiones estadísticas empecemos
+                        con algo más simple.
+                    </p>
+                    <p>
+                        El problema es considerar un paciente. Su médico no sabe cuál de dos enfermedades tiene si
+                        $A$ (proba: 20%) o $B$ (proba 80%). Lo que sí sabe es que tiene dos opciones: darle medicinas
+                        (si tiene $A$ sobrevive con un 55% de probabilidad y tiene esperanza de vida de 15 años más; 
+                        si tiene $B$ tiene un 55% de probabilidad de vivir con una esperanza de 15 años más) 
+                        u operar (80% de probabilidad de sobrevivir y tener una esperanza de 50 años más si tiene A 
+                        contra un 10% de sobrevivir con esperanza de 10 años más si tiene B). ¿Como paciente,
+                        qué decisión tomarías? ¿Cuál como especialista de salud pública (pensando que tu interés es
+                        maximizar la vida de la gente)?
+                    </p>
+
+                    <div id = "fig1" class = "panel panel-default">
+                        <div class="panel-heading" id = "fig1title"><h4>Árbol de decisiones del problema</h4></div>
+                        <div class="panel-body">
+                            <div class = "row">
+                                <div class="form-group" id = "dtree" style = "text-align:center;">
+                                </div>
+                                <script src="script/dtree.js"></script>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <p> 
+                        Pensemos ahora que llega nueva información: el paciente presenta sarpullido el cual es 
+                        más común bajo $B$ (90 de 100 casos) que bajo $A$ (5 de cada 100). ¿Cómo actualizarías
+                        la información para incluir estos nuevos datos? ¿Cómo cambian tus decisiones bajo estos 
+                        escenarios?
+                    </p>
+
+                    <h3> Convergencia </h3>
+
+                    <p>
+                        La forma de actualizar la información en la estadística bayesiana es usando el teorema de
+                        Bayes. Que no te digan, que no te cuenten: no hay de otra. Actualizar información de otra manera
+                        es posible pero en ese caso ya no es probabilidad, quién sabe que estás haciendo y nada
+                        en este mundo garantizará que tus resultados estén bien.  
+                    </p>
+
+                    <p> 
+                        Uno de los temas que no hemos tocado es la parte subjetiva. La idea central de la estadística
+                        Bayesiana es que uno tiene inicialmente sus creencias (distribución <i> a priori </i>) y conforme 
+                        adquiere más información las actualiza siguiento el teorema de Bayes. La pregunta obligada es ¿qué pasa 
+                        con gente que tiene diferentes creencias? ¿será que obtienen diferentes resultados? La respuesta
+                        es genial: conforme obtienes más información (digamos, más elementos de una muestra aleatoria) 
+                        el teorema de Bayes va obligando a tus resultados a actualizarse con la información y alejarse de 
+                        tu distribución <i>a priori</i>. 
+                    </p>
+
+                    <p> 
+                        El siguiente panel contiene un ejemplo que muestra que, no importa dónde pongas tu <i> a priori </i>
+                        eventualmente (conforme aumentas la muestra) llegas a la verdadera.
+                    </p>
+
+                     <div id = "fig2" class = "panel panel-default">
+                        <div class="panel-heading" id = "fig2title"><h4>Convergencia del estimador Bayesiano <span  style= "color:purple;">
+                            (morado) </span> hacia el verdadero <span style = "color:steelblue;"> (azul) </span> para 
+                            un <i> a priori </i> <span style = "color: tomato;"> (rojo) </span>
+                            </h4></div>
+                        <div class="panel-body">
+                            <div class = "row">
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label" for="mu">Media de la distribución real $\mu$</label>
+                                    <input class="form-control" id="mu" type="number" min = "-100" max = "100" value = "0">
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label" for="sigma">Desviación estándar real $\sigma$</label>
+                                    <input class="form-control" id="sigma" type="number" min = "0" max = "100" value = "1">
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label" for="m">Media <i> a priori </i> de la media</label>
+                                    <input class="form-control" id="m" type="number" min = "-100" max = "100" value = "0">
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label" for="c">Desviación estándar <i> a priori </i> de la media</label>
+                                    <input class="form-control" id="c" type="number" min = "0" max = "100" value = "1">
+                                </div>
+                                <div class="form-group col-lg-2">
+                                    <label class="control-label" for="nsize">Tamaño de la muestra aleatoria</label>
+                                    <input class="form-control" id="nsize" type="number" min = "0" max = "10000" value = "50">
+                                </div>
+                                <div class = "col-lg-2" style = "text-align: center;">
+                                    <a class="btn btn-primary" style = "margin-top: 20%;"  id = "sim">Simular</a>
+                                </div>
+                                <div class="form-group" id = "dgauss" style = "text-align:center;">
+                                </div>
+                                <script src="script/normdist.js"></script>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <p>
+                        Esto de la convergencia <a href = "https://stats.stackexchange.com/questions/200982/do-bayesian-priors-become-irrelevant-with-large-sample-size/201059#201059"> 
+                        no pasa siempre.</a> El (quizá) problema más común es asignar probabilidad $0$ <i> a priori </i> a algo que 
+                        tiene probabilidad positiva; es decir: si tus creencias te dicen que algo es imposible, no importa cuánta 
+                        nueva información recibas, seguirás creyendo que es imposible.  
+                    </p>
+
+                    <div class = "alert alert-dismissible alert-warning">
+                        <h3 style = "margin-top: 10px;">
+                            Yo nunca nunca
+                        </h3>
+                        <p>
+                            Hay varios puntos importantes que recordar de la estadística Bayesiana: 
+                        </p>
+                            <ul>
+                                <li> 
+                                    Como la información <i> a priori </i> es subjetiva 
+                                    no basta con tener sólo una información a priori. Debes permitir
+                                    a quien lea tus artículos meter la  <i> a priori </i> que quieran. 
+                                    Anteriorimente se usaban unas cosas conocidas como "factores de Bayes"
+                                    que eran cantidades que en fórmulas ayudaban a cambiar tu a priori. 
+                                    En el siglo XXI lo que se debe hacer es compartir el código. 
+                                </li>
+                                <li> 
+                                    Existen distribuciones <a href = "http://www.stats.org.uk/priors/noninformative/YangBerger1998.pdf"> no informativas </a> que 
+                                    funcionan de <i> a priori </i> para cuando "no se sabe nada". En general
+                                    todo artículo Bayesiano debe incluir una de este estilo. 
+                                </li>
+                                <li>
+                                    No todo para los bayesianos es subjetivo: la probabilidad sigue ciertas reglas
+                                    y es necesario obedecerlas. Lo único que es subjetivo es la <i> a priori </i> 
+                                    NADA MÁS.  
+                                </li>
+                            </ul>
+                    </div>
+
+                   <p> Después de esta desviación, volvamos a Zika. </p>
+
+                    <div class="col-lg-12" style = "text-align: center;"> 
+                        <ul class="pagination pagination-lg">
+                            <li><a href="index.html">&laquo;</a></li>
+                            <li><a href="index.html">1</a></li>
+                            <li class="active"><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

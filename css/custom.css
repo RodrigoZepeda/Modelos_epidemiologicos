@@ -16,6 +16,20 @@ h3 {
   stroke:steelblue;
 }
 
+.line2{
+  fill: none;
+  stroke: tomato;
+}
+
+.line3{
+  fill: none;
+  stroke: purple;
+}
+
+.line:hover, .line2:hover, line3:hover{
+    stroke: brown;
+}
+
 .subtitle {
     color: gray;
 }
@@ -54,3 +68,20 @@ table {
     width: 75%;
     margin: 10px auto;
 }
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 3px;
+}
+
+.node text {
+  font: 12px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 2px;
+}
+
