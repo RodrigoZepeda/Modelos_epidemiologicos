@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Introducción a posibles técnicas para modelar Zika">
+    <meta name="keywords" content="Epidemiología, Probabilidad, Modelos matemáticos, Zika, Bayes, Estadística, Bayesiana">
+    <meta name="author" content="Rodrigo Zepeda Tello">
+
+    <title>Modelando Zika 2</title>
+
+    <!-- Bootstrap code from https://bootswatch.com/flatly/ -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media = "all">
+    <link href="css/custom.css" rel="stylesheet" media = "all"> 
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    
+    <script type="text/javascript" src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-MML-AM_CHTML'></script>
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                processEscapes: true,
+            },
+            TeX: { equationNumbers: { autoNumber: "AMS" } }
+        });
+    </script>
+
+</head>
+
+<body style = "" class = "">
+    <!--Navigation menu-->
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+                <a class="navbar-brand" href="#">Modelando Zika</a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="navbar-main">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="https://github.com/RodrigoZepeda/Modelos_epidemiologicos"><img src="images/GitHub-Mark-Light-32px.png"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Title -->
+    <div class="container">
+         <div class = "bs-docs-section clearfix">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="page-header" id = "banner">
+                        <h1>Modelando Zika</h1>
+                        <h4> Estadística Bayesiana, <b>Series de Tiempo</b> y Modelos de Markov </h4>
+                        <p class="lead subtitle">Rodrigo Zepeda Tello</p>
+                    </div>
+                </div>
+            </div>
+         </div>
+    </div>
+
+    <!-- Main text --> 
+    <div class="container">
+        <div class = "bs-docs-section">
+            <div class = "row">
+                <div class="col-lg-12">
+
+                    <h2>Zika después de Bayes</h2>
+                
+                    <p>
+                        Después del recorrido por lo de Bayes ahora sí podemos hablar de la probabilidad
+                    de que haya $X$ casos de Zika en cierto momento. La idea sería construir una 
+                    <i> a priori </i> decente y poco a poco ir informando el modelo conforme
+                    más datos van llegando. La pregunta se desplaza a cómo construir el <i> a priori </i>. </p>
+
+                    <p>
+                        Una idea podría ser utilizar dengue que es una enfermedad similar transmitida por
+                    los mismos moscos y la relación que se presentó entre dengue y Zika en Brasil. El 
+                    problema se transforma ahora en 1) modelar dengue y 2) hallar la relación entre
+                    dengue y Zika (y para fines de este ejemplo asumiremos que esa parte es fácil).
+                    En el caso de México la evolución de dengue ha sido así:</p>
+
+                    <h2> Series de tiempo megabásicas </h2>
+
+                    <p>En la gráfica anterior hay dos aspectos de la epidemia: </p>
+                    <ul>
+                        <li> Una <b> tendencia </b> a la alza. </li>
+                        <li> Un componente <b> estacional </b>.
+                    </ul> 
+
+                    <p>La siguiente imagen muestra la idea: </p>
+
+                    <div id = "fig2" class = "panel panel-default">
+                        <div class="panel-heading" id = "fig2title"><h4>Series de tiempo aditivas</h4></div>
+                        <div class="panel-body">
+                            <div class = "row">
+                                 <div class="form-group col-lg-4">
+                                    <label class="control-label" for="speed">Periodo</label>
+                                    <input class="form-control" id="speed" type="number" min = "0" max = "100" value = "3">
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="control-label" for="incline">Pendiente</label>
+                                    <input class="form-control" id="incline" type="number" min = "-100" max = "100" value = "2">
+                                </div>
+                                <div class="form-group col-lg-4">
+                                    <label class="control-label" for="betainc">Inclinación tendencia</label>
+                                    <input class="form-control" id="betainc" type="number" min = "-100" max = "100" value = "1">
+                                </div>
+                                <div class="form-group col-lg-6" id = "stiempo" style = "text-align:center;">
+                                </div>
+                                <div class="form-group col-lg-6"  style = "text-align:center;">
+                                    <div class="form-group" id = "stiempo2" style = "text-align:center;">
+                                    </div>
+                                    <div class="" id = "stiempo3" style = "text-align:center;">
+                                    </div>
+                                </div>
+                                <script src="script/stiempo.js"></script>
+                            </div>
+                        </div>
+                    </div> 
+
+                    <p>Con un método similar (aunque un poco más complejo porque los datos de dengue
+                        también tienen sus problemas como confusión con otras enfermedades o reporte
+                        en fechas incorrectas) podemos crear un modelo que permite predecir los 
+                        casos de dengue en México:
+                    </p>
+
+                    <div class = "panel" style = "text-align:center;">
+                        <img src = "images/Modelo_dengue.png" width = "900" height = "750"/>
+                    </div>
+
+                    <p> La siguiente pregunta es dónde ocurrirán y qué medidas de política pública podemos
+                        tener para enfrentarlos </p>
+
+                    <p> Para hablar en términos de qué medidas podemos tomar <a href = "https://rodrigozepeda.shinyapps.io/CompartmentalizeR/">vamos acá </a> </p>
+
+
+
+                    <div class="col-lg-12" style = "text-align: center;"> 
+                        <ul class="pagination pagination-lg">
+                            <li><a href="part1.html">&laquo;</a></li>
+                            <li><a href="index.html">1</a></li>
+                            <li><a href="part1.html">2</a></li>
+                            <li><a class="active" href="#">3</a></li>
+                            <li class = "disabled"><a >&raquo;</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

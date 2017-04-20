@@ -172,12 +172,6 @@ function getData(mu, sigma, muprior, sigmaprior, nsize) {
         data.push(el);
     };
 
-    // need to sort for plotting
-    //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
-    data.sort(function(x, y) {
-        return x.x1 - y.x1;
-    });
-
 
 }
 
